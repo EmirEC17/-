@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para ti</title>
+    <style>
+        /* Importamos la fuente estilo manuscrita de Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
 
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a2e; /* Fondo oscuro y tranquilo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        /* ----- ESTILOS DEL SOBRE ----- */
+        #envelope-container {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        #envelope-container:hover {
+            transform: scale(1.05); /* Pequeño efecto al pasar el mouse */
+        }
+
+        .envelope-icon {
+            font-size: 80px;
+            color: #ecf0f1;
+            margin-bottom: 20px;
+        }
+
+        .open-text {
+            color: #ecf0f1;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: rgba(255,255,255,0.1);
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* ----- ESTILOS DE LA CARTA ----- */
+        #letter-container {
+            display: none; /* Oculto inicialmente hasta el clic */
+            width: 90%;
+            max-width: 600px;
+            background-color: #fcf9f2; /* Color de papel envejecido */
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+            /* Patrón de líneas de cuaderno */
+            background-image: repeating-linear-gradient(transparent, transparent 31px, #abced4 31px, #abced4 32px);
+            line-height: 32px;
+        }
+
+        .letter-content {
+            font-family: 'Caveat', cursive; /* Fuente manuscrita */
+            font-size: 26px;
+            color: #2c3e50; /* Color de "tinta" */
+            margin-top: -8px; /* Ajuste fino para alinear texto con las líneas */
+        }
+
+        /* ----- ESTILOS DEL LINK DE WOS ----- */
+        .song-link-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .song-link {
+            display: inline-block;
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            color: #fff;
+            background-color: #1db954; /* Verde Spotify */
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background 0.3s, transform 0.2s;
+            line-height: normal;
+        }
+
+        .song-link:hover {
+            background-color: #1ed760;
+            transform: translateY(-2px);
+        }
+
+        /* ----- DISEÑO RESPONSIVO (TELÉFONOS) ----- */
+        @media (max-width: 600px) {
+            #letter-container {
+                padding: 25px;
+            }
+            .letter-content {
+                font-size: 22px; /* Letra un poco más pequeña en celular */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="envelope-container" onclick="openLetter()">
+        <div class="envelope-icon">✉️</div>
+        <div class="open-text">Presiona para abrir la carta</div>
+    </div>
+
+    <div id="letter-container">
+        <div class="letter-content">
+            Hola,<br><br>
+            [Aquí escribe todo lo que necesitas decir. Deja que las palabras fluyan y saca todo eso que te está generando ruido en el procesador. Escribe sobre la lealtad, sobre el lugar seguro que fuiste y sobre por qué hoy decides retirar tu energía de aquí.]<br><br>
+            Me llevo lo bueno de estos 4 años, pero decido soltar lo que ya no me hace bien.<br><br>
+            Emir.<br>
+            
+            <div class="song-link-container">
+                <a href="https://open.spotify.com/search/Alma%20Dinamita%20Wos" target="_blank" class="song-link">
+                    🎵 Escuchar "Alma Dinamita" - Wos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openLetter() {
+            const envelope = document.getElementById('envelope-container');
+            const letter = document.getElementById('letter-container');
+
+            // 1. Ocultar el sobre
+            envelope.style.display = 'none';
+
+            // 2. Mostrar la carta (preparar para animación)
+            letter.style.display = 'block';
+            
+            // 3. Ejecutar la animación de entrada suave
+            setTimeout(() => {
+                letter.style.opacity = '1';
+                letter.style.transform = 'translateY(0)';
+            }, 50);
+        }
+    </script>
+</body>
+</html>
