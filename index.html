@@ -1,154 +1,278 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para ti</title>
-    <style>
-        /* Importamos la fuente estilo manuscrita de Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para ti...</title>
+  <style>
+    /* Estilos generales y fondo oscuro */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #050505;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      overflow: hidden; /* Evita que se pueda hacer scroll en el fondo */
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #1a1a2e; /* Fondo oscuro y tranquilo */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-        }
+    /* Lienzo para las partículas brillantes del fondo */
+    #canvas-fondo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
 
-        /* ----- ESTILOS DEL SOBRE ----- */
-        #envelope-container {
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
+    /* Pantalla inicial de "Toca para iniciar" */
+    #pantalla-inicio {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      transition: opacity 1s ease;
+    }
 
-        #envelope-container:hover {
-            transform: scale(1.05); /* Pequeño efecto al pasar el mouse */
-        }
+    .btn-iniciar {
+      background: transparent;
+      color: #fff;
+      border: 2px solid #fff;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255,255,255,0.5);
+      animation: palpitar 2s infinite;
+    }
 
-        .envelope-icon {
-            font-size: 80px;
-            color: #ecf0f1;
-            margin-bottom: 20px;
-        }
+    @keyframes palpitar {
+      0% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+      50% { box-shadow: 0 0 25px rgba(255,255,255,0.8); }
+      100% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+    }
 
-        .open-text {
-            color: #ecf0f1;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            background: rgba(255,255,255,0.1);
-            padding: 12px 25px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
+    /* Contenedor principal donde está el buzón */
+    #contenedor-principal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
 
-        /* ----- ESTILOS DE LA CARTA ----- */
-        #letter-container {
-            display: none; /* Oculto inicialmente hasta el clic */
-            width: 90%;
-            max-width: 600px;
-            background-color: #fcf9f2; /* Color de papel envejecido */
-            padding: 40px;
-            box-sizing: border-box;
-            border-radius: 8px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
-            position: relative;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1s ease, transform 1s ease;
-            /* Patrón de líneas de cuaderno */
-            background-image: repeating-linear-gradient(transparent, transparent 31px, #abced4 31px, #abced4 32px);
-            line-height: 32px;
-        }
+    /* El sobre / buzón */
+    .buzon {
+      font-size: 5rem;
+      cursor: pointer;
+      animation: flotar 3s ease-in-out infinite;
+      transition: transform 0.3s;
+      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+    }
 
-        .letter-content {
-            font-family: 'Caveat', cursive; /* Fuente manuscrita */
-            font-size: 26px;
-            color: #2c3e50; /* Color de "tinta" */
-            margin-top: -8px; /* Ajuste fino para alinear texto con las líneas */
-        }
+    .buzon:hover {
+      transform: scale(1.1);
+    }
 
-        /* ----- ESTILOS DEL LINK DE WOS ----- */
-        .song-link-container {
-            text-align: center;
-            margin-top: 40px;
-        }
+    .texto-buzon {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.8);
+    }
 
-        .song-link {
-            display: inline-block;
-            font-family: Arial, sans-serif;
-            font-size: 15px;
-            color: #fff;
-            background-color: #1db954; /* Verde Spotify */
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: background 0.3s, transform 0.2s;
-            line-height: normal;
-        }
+    @keyframes flotar {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
 
-        .song-link:hover {
-            background-color: #1ed760;
-            transform: translateY(-2px);
-        }
+    /* La carta emergente (Modal) */
+    #modal-carta {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      width: 85%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      background: rgba(20, 20, 20, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+      padding: 30px;
+      border-radius: 15px;
+      z-index: 50;
+      text-align: center;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
 
-        /* ----- DISEÑO RESPONSIVO (TELÉFONOS) ----- */
-        @media (max-width: 600px) {
-            #letter-container {
-                padding: 25px;
-            }
-            .letter-content {
-                font-size: 22px; /* Letra un poco más pequeña en celular */
-            }
-        }
-    </style>
+    #modal-carta.mostrar {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #modal-carta h1 {
+      color: #ffd700;
+      margin-top: 0;
+      font-family: serif;
+      font-style: italic;
+    }
+
+    #modal-carta p {
+      line-height: 1.6;
+      font-size: 1.1rem;
+    }
+
+    .btn-cerrar {
+      margin-top: 25px;
+      background: #ffd700;
+      color: #000;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-cerrar:hover {
+      background: #ffea70;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="envelope-container" onclick="openLetter()">
-        <div class="envelope-icon">✉️</div>
-        <div class="open-text">Presiona para abrir la carta</div>
-    </div>
+  <!-- Música de fondo -->
+  <audio id="musica" loop>
+    <source src="cancion.mp3" type="audio/mpeg">
+  </audio>
 
-    <div id="letter-container">
-        <div class="letter-content">
-            Hola,<br><br>
-            [Aquí escribe todo lo que necesitas decir. Deja que las palabras fluyan y saca todo eso que te está generando ruido en el procesador. Escribe sobre la lealtad, sobre el lugar seguro que fuiste y sobre por qué hoy decides retirar tu energía de aquí.]<br><br>
-            Me llevo lo bueno de estos 4 años, pero decido soltar lo que ya no me hace bien.<br><br>
-            Emir.<br>
-            
-            <div class="song-link-container">
-                <a href="https://open.spotify.com/search/Alma%20Dinamita%20Wos" target="_blank" class="song-link">
-                    🎵 Escuchar "Alma Dinamita" - Wos
-                </a>
-            </div>
-        </div>
-    </div>
+  <!-- Partículas de fondo (Canvas) -->
+  <canvas id="canvas-fondo"></canvas>
 
-    <script>
-        function openLetter() {
-            const envelope = document.getElementById('envelope-container');
-            const letter = document.getElementById('letter-container');
+  <!-- Pantalla 1: Botón para iniciar -->
+  <div id="pantalla-inicio">
+    <button class="btn-iniciar" id="btn-iniciar">Toca para iniciar</button>
+  </div>
 
-            // 1. Ocultar el sobre
-            envelope.style.display = 'none';
+  <!-- Pantalla 2: El buzón flotante -->
+  <div id="contenedor-principal">
+    <div class="buzon" id="btn-buzon">💌</div>
+    <div class="texto-buzon">Tienes una carta nueva...</div>
+  </div>
 
-            // 2. Mostrar la carta (preparar para animación)
-            letter.style.display = 'block';
-            
-            // 3. Ejecutar la animación de entrada suave
-            setTimeout(() => {
-                letter.style.opacity = '1';
-                letter.style.transform = 'translateY(0)';
-            }, 50);
-        }
-    </script>
+  <!-- Pantalla 3: La carta que se abre -->
+  <div id="modal-carta">
+    <h1>Para ti</h1>
+    <p>Aquí puedes empezar a escribir todo lo que le quieras decir.</p>
+    <p>Puedes separar tus ideas en varios párrafos copiando y pegando estas etiquetas "p" para que el texto respire y se vea bien.</p>
+    
+    <button class="btn-cerrar" id="btn-cerrar">Cerrar carta</button>
+  </div>
+
+  <script>
+    // Interfaz de usuario
+    const pantallaInicio = document.getElementById('pantalla-inicio');
+    const contenedorPrincipal = document.getElementById('contenedor-principal');
+    const btnIniciar = document.getElementById('btn-iniciar');
+    const btnBuzon = document.getElementById('btn-buzon');
+    const modalCarta = document.getElementById('modal-carta');
+    const btnCerrar = document.getElementById('btn-cerrar');
+    const musica = document.getElementById('musica');
+
+    btnIniciar.addEventListener('click', () => {
+      musica.play();
+      pantallaInicio.style.opacity = '0';
+      setTimeout(() => {
+        pantallaInicio.style.display = 'none';
+        contenedorPrincipal.style.display = 'flex';
+      }, 1000);
+    });
+
+    btnBuzon.addEventListener('click', () => {
+      modalCarta.style.display = 'block';
+      setTimeout(() => {
+        modalCarta.classList.add('mostrar');
+      }, 10);
+    });
+
+    btnCerrar.addEventListener('click', () => {
+      modalCarta.classList.remove('mostrar');
+      setTimeout(() => {
+        modalCarta.style.display = 'none';
+      }, 500); 
+    });
+
+    // Fondo de partículas mágicas
+    const canvas = document.getElementById('canvas-fondo');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particulas = [];
+    const cantidadParticulas = 80;
+
+    for(let i = 0; i < cantidadParticulas; i++) {
+      particulas.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radio: Math.random() * 2 + 0.5,
+        velocidadX: (Math.random() - 0.5) * 0.5,
+        velocidadY: (Math.random() - 0.5) * 0.5,
+        opacidad: Math.random()
+      });
+    }
+
+    function animarParticulas() {
+      requestAnimationFrame(animarParticulas);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      particulas.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radio, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 215, 0, ${p.opacidad})`; 
+        ctx.fill();
+        
+        p.x += p.velocidadX;
+        p.y += p.velocidadY;
+        
+        p.opacidad += (Math.random() - 0.5) * 0.05;
+        if(p.opacidad < 0.1) p.opacidad = 0.1;
+        if(p.opacidad > 1) p.opacidad = 1;
+        
+        if(p.x < 0 || p.x > canvas.width) p.velocidadX *= -1;
+        if(p.y < 0 || p.y > canvas.height) p.velocidadY *= -1;
+      });
+    }
+    
+    animarParticulas();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+
+  <!-- Script de Analítica (GoatCounter) -->
+  <script data-goatcounter="https://maybe-someday.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </body>
 </html>
