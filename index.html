@@ -91,12 +91,9 @@
 </head>
 <body>
 
-  <!-- Audios -->
-  <audio id="musica-fondo" loop>
-    <source src="cancion1.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="musica-carta" loop>
-    <source src="cancion2.mp3" type="audio/mpeg">
+  <!-- Audio único -->
+  <audio id="musica" loop>
+    <source src="ALMA DINAMITA.mp3" type="audio/mpeg">
   </audio>
 
   <canvas id="canvas-fondo"></canvas>
@@ -118,23 +115,26 @@
   <!-- Modal de la carta -->
   <div id="modal-carta">
     <h1>Para ti</h1>
-    <p>Escribe aquí lo que dicte el corazón.</p>
-    <p>Puedes agregar más párrafos usando las etiquetas p.</p>
+    <!-- AQUÍ IRA TU TEXTO -->
+    <p>Estoy a la espera de que pegues tu texto en el chat para acomodarlo aquí.</p>
+    
     <button class="btn-cerrar" id="btn-cerrar">Cerrar carta</button>
   </div>
 
   <script>
     // ESTADOS Y REFERENCIAS
-    // 0: Inicio, 1: Viaje (Nave 3D), 2: Llegada (Corazón y Buzón)
     let estadoExperiencia = 0; 
     let velocidadViaje = 0; 
 
-    const musicaFondo = document.getElementById('musica-fondo');
-    const musicaCarta = document.getElementById('musica-carta');
+    const musica = document.getElementById('musica');
     const pantallaInicio = document.getElementById('pantalla-inicio');
     const modalCarta = document.getElementById('modal-carta');
     const tituloFlores = document.getElementById('titulo-flores');
     const buzonContenedor = document.getElementById('buzon-contenedor');
+
+    // Cargar la imagen real del ramo
+    const imagenRamo = new Image();
+    imagenRamo.src = 'ramo.png'; 
 
     const textosRomanticos = [
       "Te quiero", "Feliz día", "Eres pura alegría", 
@@ -148,8 +148,8 @@
       if (e.target.id === 'btn-cerrar' || modalCarta.contains(e.target)) return;
 
       if (estadoExperiencia === 0) {
-        // Iniciar el viaje Warp
-        musicaFondo.play();
+        // Reproducir la canción única
+        musica.play();
         pantallaInicio.style.opacity = '0';
         velocidadViaje = 40; 
         estadoExperiencia = 1;
@@ -158,26 +158,22 @@
           pantallaInicio.style.display = 'none';
         }, 1500);
 
-        // Después de 8 segundos de viaje, llegamos al destino
         setTimeout(() => {
-          velocidadViaje = 2; // Frenar la nave
+          velocidadViaje = 2;
           estadoExperiencia = 2;
           tituloFlores.style.display = 'block';
           buzonContenedor.style.display = 'block';
         }, 8000);
       } 
       else if (estadoExperiencia === 2 && !modalCarta.classList.contains('mostrar')) {
-        // Abrir la carta
-        musicaFondo.pause();
-        musicaCarta.play();
+        // Abrir la carta (la música sigue sonando normal)
         modalCarta.style.display = 'block';
         setTimeout(() => { modalCarta.classList.add('mostrar'); }, 10);
       }
     });
 
     document.getElementById('btn-cerrar').addEventListener('click', () => {
-      musicaCarta.pause();
-      musicaFondo.play(); 
+      // Cerrar la carta (la música sigue sonando normal)
       modalCarta.classList.remove('mostrar');
       setTimeout(() => { modalCarta.style.display = 'none'; }, 500); 
     });
@@ -193,11 +189,9 @@
     redimensionarCanvas();
     window.addEventListener('resize', redimensionarCanvas);
 
-    // --- 1. CLASE PARA EL VIAJE 3D (Warp / Nave) ---
+    // 1. VIAJE 3D
     class Elemento3D {
-      constructor() {
-        this.reiniciar(true);
-      }
+      constructor() { this.reiniciar(true); }
       reiniciar(inicioAleatorio = false) {
         this.x = (Math.random() - 0.5) * 4000;
         this.y = (Math.random() - 0.5) * 4000;
@@ -216,12 +210,10 @@
       }
       actualizar() {
         this.z -= velocidadViaje;
-        if (this.z <= 1) {
-          this.reiniciar(false);
-        }
+        if (this.z <= 1) this.reiniciar(false);
       }
       dibujar(centroX, centroY) {
-        let fov = 400; // Campo de visión
+        let fov = 400; 
         let escala = fov / this.z;
         let px = this.x * escala + centroX;
         let py = this.y * escala + centroY;
@@ -242,7 +234,7 @@
       }
     }
 
-    // --- 2. CLASE PARA LA GALAXIA CORAZÓN ---
+    // 2. GALAXIA CORAZÓN
     function obtenerCoordenadasCorazon(t, escala) {
       const x = 16 * Math.pow(Math.sin(t), 3);
       const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
@@ -250,9 +242,7 @@
     }
 
     class EstrellaGalactica {
-      constructor() {
-        this.reiniciar();
-      }
+      constructor() { this.reiniciar(); }
       reiniciar() {
         this.t = 0;
         this.direccion = Math.random() > 0.5 ? 1 : -1;
@@ -266,7 +256,6 @@
         this.y = p.y;
         this.vx = 0;
         this.vy = 0;
-        
         const tono = Math.random() * 30 + 40; 
         this.color = `hsla(${tono}, 100%, 75%, ${Math.random() * 0.6 + 0.4})`;
       }
@@ -278,7 +267,6 @@
           this.vy = p.y - this.y;
           this.x = p.x;
           this.y = p.y;
-          
           if (Math.abs(this.t) >= Math.PI) {
             this.estado = 'escapando';
             this.vx += (Math.random() - 0.5) * 4;
@@ -300,15 +288,15 @@
       }
     }
 
-    // --- 3. CLASE PARA LOS RAMOS DE FLORES AMARILLAS ---
+    // 3. RAMOS DE FLORES REALES (IMAGEN)
     class RamoFlotante {
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = canvas.height + 50; 
         this.vx = (Math.random() - 0.5) * 1.5;
-        this.vy = -(Math.random() * 2 + 1.5); // Sube
+        this.vy = -(Math.random() * 2 + 1.5); 
         this.vida = 1.0; 
-        this.escala = Math.random() * 0.5 + 0.8;
+        this.escala = Math.random() * 0.5 + 0.5; 
       }
       actualizar() {
         this.x += this.vx;
@@ -316,24 +304,17 @@
         this.vida -= 0.003; 
       }
       dibujar() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.scale(this.escala, this.escala);
-        ctx.globalAlpha = Math.max(0, this.vida);
-        ctx.font = "35px Arial";
-        ctx.textAlign = "center";
-        
-        // Armamos el ramo superponiendo girasoles sobre un ramo genérico
-        ctx.fillText("💐", 0, 15);
-        ctx.fillText("🌻", -12, -5);
-        ctx.fillText("🌻", 12, -5);
-        ctx.fillText("🌻", 0, -20);
-        
-        ctx.restore();
+        if (imagenRamo.complete && imagenRamo.naturalHeight !== 0) {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.scale(this.escala, this.escala);
+          ctx.globalAlpha = Math.max(0, this.vida);
+          ctx.drawImage(imagenRamo, -75, -75, 150, 150);
+          ctx.restore();
+        }
       }
     }
 
-    // Inicializar partículas
     const particulas3D = [];
     for(let i = 0; i < 300; i++) particulas3D.push(new Elemento3D());
 
@@ -344,18 +325,14 @@
 
     const particulasRamos = [];
 
-    // Bucle de animación principal
     function animarEscena() {
       requestAnimationFrame(animarEscena);
-      
-      // Estela oscura para suavizar el movimiento
       ctx.fillStyle = 'rgba(2, 2, 5, 0.25)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       const centroX = canvas.width / 2;
       const centroY = canvas.height / 2;
 
-      // Fondo 3D
       if (estadoExperiencia > 0) {
         particulas3D.forEach(p => {
           p.actualizar();
@@ -363,27 +340,19 @@
         });
       }
 
-      // Dibujar el corazón y los ramos solo en la fase 2
       if (estadoExperiencia === 2) {
         particulasCorazon.forEach(p => {
           p.actualizar();
           p.dibujar(centroX, centroY - 20);
         });
 
-        // Probabilidad de generar un ramo nuevo (aprox cada 1.5 - 2 segundos)
-        if (Math.random() < 0.015) {
-          particulasRamos.push(new RamoFlotante());
-        }
+        if (Math.random() < 0.015) particulasRamos.push(new RamoFlotante());
 
-        // Actualizar y dibujar ramos
         for (let i = particulasRamos.length - 1; i >= 0; i--) {
           let ramo = particulasRamos[i];
           ramo.actualizar();
           ramo.dibujar();
-          
-          if (ramo.vida <= 0) {
-            particulasRamos.splice(i, 1);
-          }
+          if (ramo.vida <= 0) particulasRamos.splice(i, 1);
         }
       }
     }
