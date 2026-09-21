@@ -14,10 +14,57 @@
       background-color: #050505;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: white;
-      overflow: hidden; /* Evita que se pueda hacer scroll en el fondo */
+      overflow: hidden; 
     }
 
-    /* Lienzo para las partículas brillantes del fondo */
+    /* Pantalla inicial con el girasol */
+    #pantalla-inicio {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      transition: opacity 1s ease;
+    }
+
+    .girasol-inicio {
+      font-size: 8rem;
+      margin-bottom: 20px;
+      animation: latido-suave 3s infinite;
+      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+    }
+
+    .texto-inicio {
+      color: #ffd700;
+      font-size: 1.5rem;
+      font-style: italic;
+      cursor: pointer;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+      animation: palpitar 2s infinite;
+    }
+
+    /* Título principal de las flores amarillas */
+    #titulo-flores {
+      position: absolute;
+      top: 5%;
+      width: 100%;
+      text-align: center;
+      font-size: 2rem;
+      color: #ffd700;
+      text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+      z-index: 10;
+      display: none;
+      font-family: serif;
+      font-style: italic;
+    }
+
+    /* Lienzo para las partículas (Corazón y estrellas) */
     #canvas-fondo {
       position: absolute;
       top: 0;
@@ -27,77 +74,90 @@
       z-index: 1;
     }
 
-    /* Pantalla inicial de "Toca para iniciar" */
-    #pantalla-inicio {
+    /* Contenedor de frases flotantes */
+    #contenedor-frases {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      transition: opacity 1s ease;
-    }
-
-    .btn-iniciar {
-      background: transparent;
-      color: #fff;
-      border: 2px solid #fff;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(255,255,255,0.5);
-      animation: palpitar 2s infinite;
-    }
-
-    @keyframes palpitar {
-      0% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-      50% { box-shadow: 0 0 25px rgba(255,255,255,0.8); }
-      100% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-    }
-
-    /* Contenedor principal donde está el buzón */
-    #contenedor-principal {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      z-index: 5;
+      pointer-events: none;
       display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
     }
 
-    /* El sobre / buzón */
-    .buzon {
-      font-size: 5rem;
+    .frase-flotante {
+      position: absolute;
+      color: white;
+      font-size: 1rem;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      opacity: 0;
+      animation: flotar-frase 10s linear infinite;
+    }
+
+    .flor-flotante {
+      position: absolute;
+      font-size: 2rem;
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+      animation: flotar-frase 12s linear infinite;
+    }
+
+    /* El buzón con notificación */
+    #buzon-contenedor {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      z-index: 20;
+      display: none;
       cursor: pointer;
-      animation: flotar 3s ease-in-out infinite;
       transition: transform 0.3s;
-      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
     }
 
-    .buzon:hover {
+    #buzon-contenedor:hover {
       transform: scale(1.1);
     }
 
-    .texto-buzon {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px rgba(255,255,255,0.8);
+    .buzon-icono {
+      font-size: 4rem;
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
     }
 
-    @keyframes flotar {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0px); }
+    .notificacion {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background-color: #ff3b3b;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 10px rgba(255, 59, 59, 0.8);
+      animation: latido-rapido 1s infinite;
+    }
+
+    /* Animaciones CSS */
+    @keyframes latido-suave {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    @keyframes palpitar {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    @keyframes latido-rapido {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    @keyframes flotar-frase {
+      0% { transform: translateY(100px) scale(0.8); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(-100px) scale(1.1); opacity: 0; }
     }
 
     /* La carta emergente (Modal) */
@@ -113,7 +173,7 @@
       overflow-y: auto;
       background: rgba(20, 20, 20, 0.85);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 215, 0, 0.3);
       box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
       padding: 30px;
       border-radius: 15px;
@@ -128,91 +188,111 @@
       transform: translate(-50%, -50%) scale(1);
     }
 
-    #modal-carta h1 {
-      color: #ffd700;
-      margin-top: 0;
-      font-family: serif;
-      font-style: italic;
-    }
-
-    #modal-carta p {
-      line-height: 1.6;
-      font-size: 1.1rem;
-    }
-
+    #modal-carta h1 { color: #ffd700; margin-top: 0; font-family: serif; font-style: italic; }
+    #modal-carta p { line-height: 1.6; font-size: 1.1rem; }
     .btn-cerrar {
-      margin-top: 25px;
-      background: #ffd700;
-      color: #000;
-      border: none;
-      padding: 10px 25px;
-      border-radius: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
+      margin-top: 25px; background: #ffd700; color: #000; border: none; padding: 10px 25px;
+      border-radius: 20px; font-weight: bold; cursor: pointer; transition: background 0.3s;
     }
-
-    .btn-cerrar:hover {
-      background: #ffea70;
-    }
+    .btn-cerrar:hover { background: #ffea70; }
   </style>
 </head>
 <body>
 
-  <!-- Música de fondo -->
   <audio id="musica" loop>
     <source src="cancion.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Partículas de fondo (Canvas) -->
   <canvas id="canvas-fondo"></canvas>
+  <div id="contenedor-frases"></div>
 
-  <!-- Pantalla 1: Botón para iniciar -->
+  <h1 id="titulo-flores">Feliz día de las Flores Amarillas 🌻</h1>
+
+  <!-- Pantalla inicial tipo TikTok -->
   <div id="pantalla-inicio">
-    <button class="btn-iniciar" id="btn-iniciar">Toca para iniciar</button>
+    <div class="girasol-inicio">🌻</div>
+    <div class="texto-inicio" id="btn-iniciar">Toca para iniciar</div>
   </div>
 
-  <!-- Pantalla 2: El buzón flotante -->
-  <div id="contenedor-principal">
-    <div class="buzon" id="btn-buzon">💌</div>
-    <div class="texto-buzon">Tienes una carta nueva...</div>
+  <!-- Buzón con notificación -->
+  <div id="buzon-contenedor">
+    <div class="buzon-icono">📬</div>
+    <div class="notificacion">1</div>
   </div>
 
-  <!-- Pantalla 3: La carta que se abre -->
+  <!-- Modal de la carta -->
   <div id="modal-carta">
     <h1>Para ti</h1>
-    <p>Aquí puedes empezar a escribir todo lo que le quieras decir.</p>
-    <p>Puedes separar tus ideas en varios párrafos copiando y pegando estas etiquetas "p" para que el texto respire y se vea bien.</p>
-    
+    <p>Aquí escribes tu carta. Al estar dentro del buzón, la persona sentirá que acaba de recibir correo.</p>
+    <p>Agrega los párrafos que necesites.</p>
     <button class="btn-cerrar" id="btn-cerrar">Cerrar carta</button>
   </div>
 
   <script>
-    // Interfaz de usuario
+    // Referencias al DOM
     const pantallaInicio = document.getElementById('pantalla-inicio');
-    const contenedorPrincipal = document.getElementById('contenedor-principal');
+    const tituloFlores = document.getElementById('titulo-flores');
+    const buzonContenedor = document.getElementById('buzon-contenedor');
+    const contenedorFrases = document.getElementById('contenedor-frases');
     const btnIniciar = document.getElementById('btn-iniciar');
-    const btnBuzon = document.getElementById('btn-buzon');
     const modalCarta = document.getElementById('modal-carta');
     const btnCerrar = document.getElementById('btn-cerrar');
     const musica = document.getElementById('musica');
 
+    // Textos flotantes
+    const textos = [
+      "Te quiero", "Feliz día", "Eres pura alegría", 
+      "Sonríe siempre", "Luz en mi vida", "Un detalle amarillo", 
+      "Eres muy especial", "Atesoro tu compañía", "Mi flor favorita"
+    ];
+    const flores = ["🌻", "🌻", "🌼", "💐"];
+
+    // Función para crear elementos flotantes en posiciones aleatorias
+    function crearFlotantes() {
+      // Crear textos
+      textos.forEach((texto, i) => {
+        let el = document.createElement('div');
+        el.className = 'frase-flotante';
+        el.innerText = texto;
+        el.style.left = Math.random() * 80 + 10 + '%';
+        el.style.top = Math.random() * 80 + 10 + '%';
+        el.style.animationDelay = (Math.random() * 5) + 's';
+        contenedorFrases.appendChild(el);
+      });
+      // Crear flores
+      for(let i=0; i<6; i++) {
+        let el = document.createElement('div');
+        el.className = 'flor-flotante';
+        el.innerText = flores[Math.floor(Math.random() * flores.length)];
+        el.style.left = Math.random() * 90 + 5 + '%';
+        el.style.top = Math.random() * 90 + 5 + '%';
+        el.style.animationDelay = (Math.random() * 5) + 's';
+        contenedorFrases.appendChild(el);
+      }
+    }
+
+    // Iniciar experiencia
     btnIniciar.addEventListener('click', () => {
       musica.play();
       pantallaInicio.style.opacity = '0';
+      crearFlotantes();
       setTimeout(() => {
         pantallaInicio.style.display = 'none';
-        contenedorPrincipal.style.display = 'flex';
+        tituloFlores.style.display = 'block';
+        buzonContenedor.style.display = 'block';
+        contenedorFrases.style.display = 'block';
       }, 1000);
     });
 
-    btnBuzon.addEventListener('click', () => {
+    // Abrir carta
+    buzonContenedor.addEventListener('click', () => {
       modalCarta.style.display = 'block';
       setTimeout(() => {
         modalCarta.classList.add('mostrar');
       }, 10);
     });
 
+    // Cerrar carta
     btnCerrar.addEventListener('click', () => {
       modalCarta.classList.remove('mostrar');
       setTimeout(() => {
@@ -220,55 +300,84 @@
       }, 500); 
     });
 
-    // Fondo de partículas mágicas
+    // --- LÓGICA DEL CANVAS (Corazón y Estrellas) ---
     const canvas = document.getElementById('canvas-fondo');
     const ctx = canvas.getContext('2d');
     
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    function redimensionarCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    redimensionarCanvas();
+    window.addEventListener('resize', redimensionarCanvas);
     
-    const particulas = [];
-    const cantidadParticulas = 80;
+    const particulasEstrellas = [];
+    const particulasCorazon = [];
+    
+    // Ecuación matemática para dibujar un corazón
+    function obtenerPuntoCorazon(t, escala) {
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+      return { x: x * escala, y: y * escala };
+    }
 
-    for(let i = 0; i < cantidadParticulas; i++) {
-      particulas.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radio: Math.random() * 2 + 0.5,
-        velocidadX: (Math.random() - 0.5) * 0.5,
+    // Generar partículas del corazón en el centro
+    const totalPuntosCorazon = 150;
+    for(let i = 0; i < Math.PI * 2; i += (Math.PI * 2) / totalPuntosCorazon) {
+      let punto = obtenerPuntoCorazon(i, window.innerWidth < 600 ? 8 : 12); 
+      particulasCorazon.push({
+        offsetX: punto.x,
+        offsetY: punto.y,
+        radio: Math.random() * 1.5 + 0.5,
+        opacidad: Math.random(),
+        velocidadParpadeo: Math.random() * 0.05 + 0.01
+      });
+    }
+
+    // Generar estrellas de fondo
+    for(let i = 0; i < 100; i++) {
+      particulasEstrellas.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        radio: Math.random() * 1.5 + 0.5,
         velocidadY: (Math.random() - 0.5) * 0.5,
         opacidad: Math.random()
       });
     }
 
-    function animarParticulas() {
-      requestAnimationFrame(animarParticulas);
+    function animarCanvas() {
+      requestAnimationFrame(animarCanvas);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      particulas.forEach(p => {
+      const centroX = canvas.width / 2;
+      const centroY = canvas.height / 2 + 20;
+
+      // Dibujar partículas del corazón
+      particulasCorazon.forEach(p => {
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radio, 0, Math.PI * 2);
+        ctx.arc(centroX + p.offsetX, centroY + p.offsetY, p.radio, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 215, 0, ${p.opacidad})`; 
         ctx.fill();
         
-        p.x += p.velocidadX;
+        // Parpadeo del corazón
+        p.opacidad += p.velocidadParpadeo;
+        if(p.opacidad <= 0.2 || p.opacidad >= 1) p.velocidadParpadeo *= -1;
+      });
+
+      // Dibujar estrellas de fondo
+      particulasEstrellas.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radio, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacidad})`; 
+        ctx.fill();
+        
         p.y += p.velocidadY;
-        
-        p.opacidad += (Math.random() - 0.5) * 0.05;
-        if(p.opacidad < 0.1) p.opacidad = 0.1;
-        if(p.opacidad > 1) p.opacidad = 1;
-        
-        if(p.x < 0 || p.x > canvas.width) p.velocidadX *= -1;
-        if(p.y < 0 || p.y > canvas.height) p.velocidadY *= -1;
+        if(p.y < 0) p.y = canvas.height;
+        if(p.y > canvas.height) p.y = 0;
       });
     }
     
-    animarParticulas();
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
+    animarCanvas();
   </script>
 
   <!-- Script de Analítica (GoatCounter) -->
